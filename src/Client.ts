@@ -113,7 +113,7 @@ export class Client {
   /**
    * Get a list of user Tokens.
    * @param {Number} userid the id of the user who's Tokens you want to fetch.
-   * @returns {Token | null} a Token, or null if the user doesn't have a token.
+   * @returns {Token[] | null} a Token, or null if the user doesn't have a token.
    */
   public async getTokenUser(userid: number) {
     return await this._makeRequestWithFallback<Token[]>(`tokens/userid/${userid}`)
