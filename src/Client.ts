@@ -1,5 +1,6 @@
+import { SpamWatchError } from '.';
 import { BadRequestError, ForbiddenError, NotFoundError, ServerError, TooManyRequestsError, UnauthorizedError } from './Errors';
-import { AddBan, Ban, Stats, Version } from './models';
+import { AddBan, Ban, Token, TokenPermission, Stats, Version } from './models';
 
 export class Client {
   private host: string;
@@ -76,6 +77,66 @@ export class Client {
    */
   public async getBans(): Promise<Ban[]> {
     return this._makeRequest<Ban[]>('banlist');
+  }
+
+  /**
+   * Get all tokens.
+   * Requires ROOT permission.
+   * @returns {Token[]} Array of Token
+   */
+  public async getTokens() {
+    return this._makeRequest<Token[]>('tokens');
+  }
+
+  /**
+   * Create a token for a user.
+   * @param {Number} userid id of the user to create the token for.
+   * @param {TokenPermission} permission what permission to apply to the token.
+   * @returns {Token} the created Token.
+   */
+  public async createToken(userid: number, permission: TokenPermission) {
+    return this._makeRequestWithFallback<Token>('tokens', 'POST', {
+      id: userid,
+      permission,
+    });
+  }
+
+  /**
+   * Fetch a Token by id.
+   * @param {Number} tokenid the id of the Token to fetch.
+   * @returns {Token} a Token.
+   */
+  public async getToken(tokenid: number) {
+    return this._makeRequestWithFallback<Token>(`tokens/${tokenid}`);
+  }
+
+  /**
+   * Get a list of user Tokens.
+   * @param {Number} userid the id of the user who's Tokens you want to fetch.
+   * @returns {Token | null} a Token, or null if the user doesn't have a token.
+   */
+  public async getTokenUser(userid: number) {
+    return this._makeRequestWithFallback<Token>(`tokens/userid/${userid}`)
+  }
+
+  /**
+   * Delete a Token by id.
+   * @param {Number} tokenid the id of the Token to delete.
+   */
+   public async deleteToken(tokenid: number) {
+    this._makeRequest<null>(`tokens/${tokenid}`, 'DELETE');
+  }
+
+  private async _makeRequestWithFallback<T>(path: string, method = 'GET', kwargs = {}, fallback = null) {
+    try {
+      return this._makeRequest<T>(path, method, kwargs);
+    } catch (e) {
+      if (e instanceof SpamWatchError) {
+        return fallback
+      } else {
+        throw e
+      }
+    }
   }
 
   private async _makeRequest<T>(path: string, method = 'GET', kwargs = {}): Promise<T> {
