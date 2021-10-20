@@ -116,7 +116,7 @@ export class Client {
    * @returns {Token | null} a Token, or null if the user doesn't have a token.
    */
   public async getTokenUser(userid: number) {
-    return await this._makeRequestWithFallback<Token>(`tokens/userid/${userid}`)
+    return await this._makeRequestWithFallback<Token[]>(`tokens/userid/${userid}`)
   }
 
   /**
