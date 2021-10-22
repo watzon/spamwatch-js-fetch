@@ -84,8 +84,10 @@ export class Client {
    * Requires ROOT permission.
    * @returns {Token[]} Array of Token
    */
-  public async getTokens() {
-    return await this._makeRequest<Token[]>('tokens');
+  public async getTokens(retired = false) {
+    const tokens = await this._makeRequest<Token[]>('tokens');
+    if (retired) return tokens;
+    return tokens.filter((t) => !t.retired)
   }
 
   /**
@@ -115,8 +117,10 @@ export class Client {
    * @param {Number} userid the id of the user who's Tokens you want to fetch.
    * @returns {Token[] | null} a Token, or null if the user doesn't have a token.
    */
-  public async getTokenUser(userid: number) {
-    return await this._makeRequestWithFallback<Token[]>(`tokens/userid/${userid}`)
+  public async getTokenUser(userid: number, retired = false) {
+    const tokens = await this._makeRequestWithFallback<Token[]>(`tokens/userid/${userid}`)
+    if (!tokens || retired) return tokens;
+    return tokens.filter((t) => !t.retired)
   }
 
   /**
@@ -140,18 +144,18 @@ export class Client {
   }
 
   private async _makeRequest<T>(path: string, method = 'GET', kwargs = {}): Promise<T> {
-    const response = await fetch(
-      `${this.host}/${path}`,
-      {
-        method,
-        headers: {
-          'Authorization': `Bearer ${this.token}`,
-        },
-        ...kwargs,
-      },
-    );
+    const response = await fetch(`${this.host}/${path}`, {
+      method,
+      headers: new Headers({
+        'Authorization': `Bearer ${this.token}`,
+        'Content-Type': 'application/json',
+      }),
+      body: Object.keys(kwargs).length > 0 ? JSON.stringify(kwargs) : null,
+    });
 
-    const json = (await response.clone().json()) || {};
+    let json: any;
+    try { json = await response.clone().json() }
+    catch { json = {} }
 
     switch (response.status) {
       default:
