@@ -1,23 +1,30 @@
-# SpamWatch API JavaScript Wrapper (fetch alternate)  
+# SpamWatch API TypeScript Client
 
-Alternative version of the official [SpamWatch JS API](https://github.com/SpamWatch/spamwatch-js) that uses the [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) instead of axios for better compatibility with non-NodeJS clients.
+This is a TypeScript client for [the SpamWatch API](https://docs.spamwat.ch) written using Deno and converted to a node-friendly version using [deno2node](https://github.com/wojpawlik/deno2node). This is a heavily modified version of [spamwatch-js-fetch](https://github.com/Crashdoom/spamwatch-js-fetch) which has full API support and supports both the Node and Deno ecosystems. Big thanks to [Crashdoom](https://github.com/Crashdoom) for the original code.
 
-This library has TypeScript types included, so you do not need to install types separately.
+# Usage (Deno)
 
-## API Documentation
-For documentation on the API, visit the SpamWatch documentation at https://docs.spamwat.ch/.
+```ts
+import { Client } from 'https://deno.land/x/spamwatch@1.0.0/src/index.ts'
 
-## Example Usage
-#### async / await
+const spamwatch = new Client(YOUR_TOKEN, 'https://api.spamwat.ch')
+const version = await spamwatch.getVersion()
+console.log(version)
 ```
+
+# Usage (Node)
+
+```sh
+npm install spamwatch-ts
+```
+
+```ts
+const { Client } = require('spamwatch-ts')
+
 (async () => {
-	const client = new Client('APITOKEN');
-	console.log(await client.getBan(12345));
-})();
+	const spamwatch = new Client(YOUR_TOKEN, 'https://api.spamwat.ch')
+	const version = await spamwatch.getVersion()
+	console.log(version)
+})()
 ```
 
-#### Promise
-```
-const client = new Client('APITOKEN');
-client.getBan(12345).then(ban => console.log).catch(console.err);
-```

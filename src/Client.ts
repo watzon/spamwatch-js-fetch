@@ -150,7 +150,7 @@ export class Client {
         'Authorization': `Bearer ${this.token}`,
         'Content-Type': 'application/json',
       }),
-      body: Object.keys(kwargs).length > 0 ? JSON.stringify(kwargs) : null,
+      body: Object.keys(kwargs).length > 0 ? JSON.stringify(kwargs) : undefined,
     });
 
     let json: any;

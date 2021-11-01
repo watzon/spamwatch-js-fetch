@@ -1,31 +1,22 @@
 {
   "compilerOptions": {
-    "declaration": true,
-    "declarationMap": true,
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "lib": [
-      "esnext",
-      "WebWorker",
-    ],
-    "target": "ES2018",
-    "outDir": "./lib",
-    "removeComments": true,
-    "inlineSourceMap": true,
-    "inlineSources": true,
-    "preserveConstEnums": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
+      "charset": "utf8",
+      "forceConsistentCasingInFileNames": true,
+      "newLine": "lf",
+      "noFallthroughCasesInSwitch": true,
+      "noImplicitReturns": true,
+      "noUnusedParameters": true,
+      "rootDir": "./src/",
+      "strict": true,
+      "declaration": true,
+      "moduleResolution": "node",
+      "module": "commonjs",
+      "outDir": "./dist/",
+      "skipLibCheck": true,
+      "target": "es2019"
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "**/*-spec.ts"
-  ]
+  "include": ["src/"],
+  "deno2node": {
+      "shim": "./src/shim.node.ts"
+  }
 }
