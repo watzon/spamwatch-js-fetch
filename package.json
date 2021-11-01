@@ -24,7 +24,7 @@
     "rose-bot",
     "antispam"
   ],
-  "author": "https://github.com/watzon",
+  "author": "Chris Watson <cawatson1993@gmail.com> (https://github.com/watzon)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/watzon/spamwatch-ts/issues"
