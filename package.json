@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Crashdoom/spamwatch-js-fetch.git"
+    "url": "git+https://github.com/watzon/spamwatch-ts.git"
   },
   "keywords": [
     "spamwatch",
@@ -27,9 +27,9 @@
   "author": "https://github.com/watzon",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Crashdoom/spamwatch-js-fetch/issues"
+    "url": "https://github.com/watzon/spamwatch-ts/issues"
   },
-  "homepage": "https://github.com/Crashdoom/spamwatch-js-fetch",
+  "homepage": "https://github.com/watzon/spamwatch-ts",
   "dependencies": {
     "node-fetch": "^2.6.5"
   },
