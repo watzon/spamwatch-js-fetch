@@ -1,12 +1,26 @@
-import { SpamWatchError } from './index.ts';
-import { BadRequestError, ForbiddenError, NotFoundError, ServerError, TooManyRequestsError, UnauthorizedError } from './Errors.ts';
-import { AddBan, Ban, Token, TokenPermission, Stats, Version } from './models/index.ts';
+import {
+  BadRequestError,
+  ForbiddenError,
+  NotFoundError,
+  ServerError,
+  SpamWatchError,
+  TooManyRequestsError,
+  UnauthorizedError,
+} from "./errors.ts";
+import {
+  AddBan,
+  Ban,
+  Stats,
+  Token,
+  TokenPermission,
+  Version,
+} from "./models/mod.ts";
 
 export class Client {
   private host: string;
   private token: string;
 
-  constructor(token: string, host = 'https://api.spamwat.ch') {
+  constructor(token: string, host = "https://api.spamwat.ch") {
     this.host = host;
     this.token = token;
   }
@@ -16,7 +30,7 @@ export class Client {
    * @returns {Version} Version of the API
    */
   public async getVersion(): Promise<Version> {
-    return await this._makeRequest<Version>('version');
+    return await this._makeRequest<Version>("version");
   }
 
   /**
@@ -24,7 +38,7 @@ export class Client {
    * @returns {Stats}
    */
   public async getStats(): Promise<Stats> {
-    return await this._makeRequest<Stats>('stats');
+    return await this._makeRequest<Stats>("stats");
   }
 
   /**
@@ -33,7 +47,7 @@ export class Client {
    * @param banInfo user ID and ban reason
    */
   public async addBan(banInfo: AddBan): Promise<void> {
-    return await this._makeRequest('banlist', 'POST', banInfo);
+    return await this._makeRequest("banlist", "POST", banInfo);
   }
 
   /**
@@ -42,7 +56,7 @@ export class Client {
    * @param userId user ID to unban
    */
   public async deleteBan(userId: number): Promise<void> {
-    return await this._makeRequest(`banlist/${userId}`, 'DELETE');
+    return await this._makeRequest(`banlist/${userId}`, "DELETE");
   }
 
   /**
@@ -67,7 +81,7 @@ export class Client {
    * @returns {number[]} Array of Telegram user IDs
    */
   public async getBanIds(): Promise<number[]> {
-    return await this._makeRequest<number[]>('banlist/all');
+    return await this._makeRequest<number[]>("banlist/all");
   }
 
   /**
@@ -76,7 +90,7 @@ export class Client {
    * @returns {Ban[]} Array of Ban
    */
   public async getBans(): Promise<Ban[]> {
-    return await this._makeRequest<Ban[]>('banlist');
+    return await this._makeRequest<Ban[]>("banlist");
   }
 
   /**
@@ -85,9 +99,9 @@ export class Client {
    * @returns {Token[]} Array of Token
    */
   public async getTokens(retired = false) {
-    const tokens = await this._makeRequest<Token[]>('tokens');
+    const tokens = await this._makeRequest<Token[]>("tokens");
     if (retired) return tokens;
-    return tokens.filter((t) => !t.retired)
+    return tokens.filter((t) => !t.retired);
   }
 
   /**
@@ -97,7 +111,7 @@ export class Client {
    * @returns {Token} the created Token.
    */
   public async createToken(userid: number, permission: TokenPermission) {
-    return await this._makeRequestWithFallback<Token>('tokens', 'POST', {
+    return await this._makeRequestWithFallback<Token>("tokens", "POST", {
       id: userid,
       permission,
     });
@@ -118,9 +132,11 @@ export class Client {
    * @returns {Token[] | null} a Token, or null if the user doesn't have a token.
    */
   public async getTokenUser(userid: number, retired = false) {
-    const tokens = await this._makeRequestWithFallback<Token[]>(`tokens/userid/${userid}`)
+    const tokens = await this._makeRequestWithFallback<Token[]>(
+      `tokens/userid/${userid}`,
+    );
     if (!tokens || retired) return tokens;
-    return tokens.filter((t) => !t.retired)
+    return tokens.filter((t) => !t.retired);
   }
 
   /**
@@ -128,34 +144,46 @@ export class Client {
    * @param {Number} tokenid the id of the Token to delete.
    */
   public async deleteToken(tokenid: number) {
-    await this._makeRequest<null>(`tokens/${tokenid}`, 'DELETE');
+    await this._makeRequest<null>(`tokens/${tokenid}`, "DELETE");
   }
 
-  private async _makeRequestWithFallback<T>(path: string, method = 'GET', kwargs = {}, fallback = null) {
+  private async _makeRequestWithFallback<T>(
+    path: string,
+    method = "GET",
+    kwargs = {},
+    fallback = null,
+  ) {
     try {
       return await this._makeRequest<T>(path, method, kwargs);
     } catch (e) {
       if (e instanceof SpamWatchError) {
-        return fallback
+        return fallback;
       } else {
-        throw e
+        throw e;
       }
     }
   }
 
-  private async _makeRequest<T>(path: string, method = 'GET', kwargs = {}): Promise<T> {
+  private async _makeRequest<T>(
+    path: string,
+    method = "GET",
+    kwargs = {},
+  ): Promise<T> {
     const response = await fetch(`${this.host}/${path}`, {
       method,
       headers: new Headers({
-        'Authorization': `Bearer ${this.token}`,
-        'Content-Type': 'application/json',
+        "Authorization": `Bearer ${this.token}`,
+        "Content-Type": "application/json",
       }),
       body: Object.keys(kwargs).length > 0 ? JSON.stringify(kwargs) : undefined,
     });
 
     let json: any;
-    try { json = await response.clone().json() }
-    catch { json = {} }
+    try {
+      json = await response.clone().json();
+    } catch {
+      json = {};
+    }
 
     switch (response.status) {
       default:
@@ -165,7 +193,7 @@ export class Client {
         throw new BadRequestError(response, json);
 
       case 401:
-        throw new UnauthorizedError(response, 'Invalid token');
+        throw new UnauthorizedError(response, "Invalid token");
 
       case 403:
         throw new ForbiddenError(response, this.token);
@@ -177,7 +205,7 @@ export class Client {
         throw new TooManyRequestsError(response, json);
 
       case 500:
-        throw new ServerError(response, 'api.spamwat.ch Internal Server Error');
+        throw new ServerError(response, "api.spamwat.ch Internal Server Error");
     }
   }
 }
