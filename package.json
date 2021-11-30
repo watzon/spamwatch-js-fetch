@@ -1,9 +1,9 @@
 {
-  "name": "spamwatch-ts",
+  "name": "spamwatch-all",
   "version": "1.0.0",
-  "description": "A TypeScript SpamWatch API client written using Deno and converted to a npm package",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "description": "Spamwatch for browsers, Deno & Node.js.",
+  "main": "dist/mod.js",
+  "types": "dist/mod.d.ts",
   "files": [
     "dist"
   ],
@@ -11,30 +11,30 @@
     "node": "^12.20.0 || >=14.13.1"
   },
   "scripts": {
-    "prepublishOnly": "deno2node tsconfig.json"
+    "prepublishOnly": "deno2node tsconfig.json",
+    "webpack": "webpack --config webpack.config.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/watzon/spamwatch-ts.git"
+    "url": "git+https://github.com/rojserbest/spamwatch-all.git"
   },
   "keywords": [
     "spamwatch",
     "telegram",
-    "miss-rose",
-    "rose-bot",
     "antispam"
   ],
-  "author": "Chris Watson <cawatson1993@gmail.com> (https://github.com/watzon)",
+  "author": "Roj Serbest <roj@rojser.best> (https://github.com/watzon)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/watzon/spamwatch-ts/issues"
+    "url": "https://github.com/rojserbest/spamwatch-all/issues"
   },
-  "homepage": "https://github.com/watzon/spamwatch-ts",
+  "homepage": "https://github.com/watzon/spamwatch-all",
   "dependencies": {
     "node-fetch": "^2.6.5"
   },
   "devDependencies": {
     "@types/node": "^12.20.33",
-    "@types/node-fetch": "^2.5.12"
+    "@types/node-fetch": "^2.5.12",
+    "webpack-cli": "^4.9.1"
   }
 }

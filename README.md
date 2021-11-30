@@ -1,30 +1,79 @@
-# SpamWatch API TypeScript Client
+# spamwatch-all
 
-This is a TypeScript client for [the SpamWatch API](https://docs.spamwat.ch) written using Deno and converted to a node-friendly version using [deno2node](https://github.com/wojpawlik/deno2node). This is a heavily modified version of [spamwatch-js-fetch](https://github.com/Crashdoom/spamwatch-js-fetch) which has full API support and supports both the Node and Deno ecosystems. Big thanks to [Crashdoom](https://github.com/Crashdoom) for the original code.
+JavaScript Spamwatch client for browsers, Deno and Node.js with a single code
+base.
 
-# Usage (Deno)
-
-```ts
-import { Client } from 'https://deno.land/x/spamwatch@1.0.0/src/index.ts'
-
-const spamwatch = new Client(YOUR_TOKEN, 'https://api.spamwat.ch')
-const version = await spamwatch.getVersion()
-console.log(version)
-```
-
-# Usage (Node)
-
-```sh
-npm install spamwatch-ts
-```
+# Use with Deno
 
 ```ts
-const { Client } = require('spamwatch-ts')
+import { Client } from "./src/mod.ts";
+
+const client = new Client(YOUR_TOKEN, "https://api.spamwat.ch");
+
+const version = await client.getVersion();
+console.log(version);
+```
+
+# Use with Node.js
+
+```ts
+const { Client } = require("dist/mod.js");
+
+const client = new Client(YOUR_TOKEN, "https://api.spamwat.ch");
 
 (async () => {
-	const spamwatch = new Client(YOUR_TOKEN, 'https://api.spamwat.ch')
-	const version = await spamwatch.getVersion()
-	console.log(version)
-})()
+  const version = await spamwatch.getVersion();
+  console.log(version);
+})();
 ```
 
+# Use with browsers
+
+## Method 1: Traditionally
+
+1. Run `deno2node`:
+
+```bash
+npm run prepublishOnly
+```
+
+2. Run Webpack:
+
+```bash
+npm run webpack
+```
+
+3. Use in your traditional code.
+
+```html
+<script src="out/spamwatch.js"></script>
+<script>
+	const client = new spamwatch.Client(YOUR_TOKEN, "https://api.spamwat.ch");
+
+	(async () => {
+		const version = await client.getVersion();
+		console.log(version);
+	})();
+</script>
+```
+
+## Method 2: Modernly
+
+1. Run `deno bundle`:
+
+```bash
+deno bundle src/mod.ts spamwatch.js
+```
+
+2. Use in your modern code.
+
+```html
+<script type="module">
+	import { Client } from "./spamwatch.js";
+
+	const client = new Client(YOUR_TOKEN, "https://api.spamwat.ch");
+
+	const version = await client.getVersion();
+	console.log(version);
+</script>;
+```

@@ -15,7 +15,7 @@ export class UnauthorizedError extends SpamWatchError {}
 
 export class NotFoundError extends SpamWatchError {
   constructor(response: Response) {
-    super(response, 'Resource not found');
+    super(response, "Resource not found");
   }
 }
 
@@ -33,7 +33,7 @@ export class ForbiddenError extends SpamWatchError {
   public token: string;
 
   constructor(response: Response, token: string) {
-    super(response, 'Token is not authorized for this operation.');
+    super(response, "Token is not authorized for this operation.");
     this.token = token;
   }
 }
@@ -57,4 +57,3 @@ export class TooManyRequestsError extends SpamWatchError {
 }
 
 export class ServerError extends SpamWatchError {}
-
