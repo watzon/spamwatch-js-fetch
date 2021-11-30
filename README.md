@@ -69,7 +69,7 @@ deno bundle src/mod.ts spamwatch.js
 
 ```html
 <script type="module">
-	import { Client } from "./spamwatch.ts";
+	import { Client } from "./spamwatch.js";
 
 	const client = new Client(YOUR_TOKEN, "https://api.spamwat.ch");
 
